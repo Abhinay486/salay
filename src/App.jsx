@@ -33,16 +33,20 @@ function App() {
     netPay: 0
   })
 
-  // Prevent mouse wheel and arrow keys from changing number inputs
+  // Prevent Arrow keys from changing number inputs; allow normal scrolling
   const inputEvents = {
-    onWheel: (e) => {
-      e.preventDefault()
-      e.currentTarget.blur()
-    },
     onKeyDown: (e) => {
       if (e.key === 'ArrowUp' || e.key === 'ArrowDown' || e.key === 'PageUp' || e.key === 'PageDown') {
         e.preventDefault()
       }
+    },
+  }
+
+  // Blur focused number input before wheel default to avoid value changes but keep page scrolling
+  const handleWheelCapture = () => {
+    const el = document.activeElement
+    if (el && el.tagName === 'INPUT' && el.getAttribute('type') === 'number') {
+      el.blur()
     }
   }
 
@@ -83,7 +87,7 @@ function App() {
   }, [basePay, daRate, hraRate, irRate, hma, others, cca, zppf, apgli, gis, pt, ehs, ewf, swf, advtax])
 
   return (
-    <div className="app-container">
+  <div className="app-container" onWheelCapture={handleWheelCapture}>
       <div className="page-header">
         <h1 className="page-title">Salary Calculator</h1>
         <p className="page-subtitle">Calculate your salary breakdown with deductions</p>
